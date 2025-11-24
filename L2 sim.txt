@@ -1,0 +1,15 @@
+$ sudo snap install oai-sim
+$ sudo oai-sim.init
+
+$ sudo snap connect oai-sim:log-observe
+$ sudo snap connect oai-sim:network-control
+$ sudo snap connect oai-sim:process-control
+$ sudo snap connect oai-sim:netlink-connector
+
+$ sudo vim $(oai-sim.usim-get)  # edit the sim info as desired
+$ oai-sim.usim-gen              # generate the virtual sim card
+
+$ telnet 127.0.0.1 9090
+telnet> enable ue 0 # starts UE 0
+telnet> enable ue 1 # etc, do it in order!
+

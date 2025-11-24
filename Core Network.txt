@@ -1,0 +1,58 @@
+Prep:
+$ sudo snap install docker
+$ docker ps    # Check Docker status, see comment below
+$ docker run --name cassandra-docker -d -e CASSANDRA_CLUSTER_NAME="OAI HSS Cluster" \
+      -e CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch \
+      mosaic5gecosys/cassandra-m5g:1.0  # Create a cassandra container for the HSS
+$ docker exec -it cassandra-docker bash # Start an interactive session
+$ nodetool status                       # Check the Cassandra status
+$ cqlsh --file ./oai_db.cql 172.17.0.2  # Install the oai_db database
+
+If Perm denied
+$ sudo groupadd docker
+$ sudo adduser $USER docker
+
+Notestatus:
+# nodetool status
+Datacenter: DC1
+===============
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address     Load   Tokens  Owns (effective)  Host ID                               Rack
+UN  172.17.0.2  Y KB   256     100.0%            XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX  RAC1"
+
+
+$ docker start cassandra-docker
+$ ./build_m5g -C v2
+$ sudo snap connect oai-hss:log-observe
+$ sudo snap connect oai-hss:process-control
+$ sudo snap connect oai-hss:network-control
+$ sudo oai-hss.init
+$ sudo oai-hss
+
+$ sudo snap connect oai-mme:log-observe
+$ sudo snap connect oai-mme:process-control
+$ sudo snap connect oai-mme:network-control 
+$ sudo oai-mme.init
+$ sudo oai-mme
+[...]
+Initializing S6a interface: DONE
+MME app initialization complete 
+Peer '<hostname>.openair5G.eur' is now connected...
+
+$ sudo snap connect oai-spgwc:log-observe
+$ sudo snap connect oai-spgwc:process-control
+$ sudo snap connect oai-spgwu:process-control 
+$ sudo snap connect oai-spgwu:network-control 
+$ sudo snap connect oai-spgwu:firewall-control 
+$ sudo snap connect oai-spgwu:log-observe
+
+
+$ sudo oai-spgwc.init
+$ sudo oai-spgwc.conf-get
+$ sudo oai-spgwu.init
+$ sudo oai-spgwu.conf-get
+$ sudo oai-spgwc
+$ sudo oai-spgwu
+
+
