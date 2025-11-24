@@ -1,0 +1,31 @@
+sudo apt install -y liblog4cxx-dev
+sudo apt install -y git cmake g++ libssl-dev
+sudo apt-get install -y libpistache-dev
+sudo apt install libboost-all-dev
+sudo apt install libcurl4-openssl-dev
+sudo apt install protobuf-compiler libprotobuf-dev
+
+git clone https://github.com/pistacheio/pistache.git
+cd pistache
+
+
+# Build static library với Meson
+#bash
+#Sao chép mã
+# Tạo thư mục build
+meson setup build --buildtype=release -Ddefault_library=static
+
+# Build với Ninja
+ninja -C build
+
+# Cài vào hệ thống
+sudo ninja -C build install
+sudo ldconfig
+
+ls /usr/local/lib/x86_64-linux-gnu/libpistache.a
+ls /usr/local/include/pistache
+mv libpistache.a  /usr/local/lib
+
+./build_m5g -f
+cd flexran
+
